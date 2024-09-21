@@ -17,7 +17,6 @@ ORDER_STATS_FILE = './JsonFiles/order_stats.json'
 
 print("Running the Flask app...")
 
-
 # if it doesn't exist, create the jsonFiles directory
 if not os.path.exists('./JsonFiles'):
     os.makedirs('./JsonFiles')
@@ -28,17 +27,11 @@ if not os.path.isfile(ORDER_STATS_FILE):
         json.dump({}, f)
         f.close()
 
-
 # create stores_config.json if it doesn't exist with initial data {}
 if not os.path.isfile(STORE_CONFIG_PATH):
     with open(STORE_CONFIG_PATH, 'w') as f:
         json.dump({}, f)
         f.close()
-
-
-
-with open(STORE_CONFIG_PATH) as f:  # NOQA
-    STORE_CONFIG = json.load(f)
 
 store_threads = {}
 
@@ -318,7 +311,8 @@ def upload_file():
     if 'user' not in session:
         return redirect(url_for('login'))
 
-
+    with open(STORE_CONFIG_PATH) as f:  # NOQA
+        STORE_CONFIG = json.load(f)
 
     if request.method == 'POST':
         print("POST request received")
@@ -439,6 +433,7 @@ def api_order_stats():
         order_stats = json.load(f)
     return jsonify(order_stats)
 
+
 # see all stores in JsonFiles/store_config.json
 @app.route('/api/store_config')
 def api_store_config():
@@ -447,7 +442,5 @@ def api_store_config():
     return jsonify(store_config)
 
 
-
 if __name__ == '__main__':
     app.run(port=5000)
-
