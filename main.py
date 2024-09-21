@@ -318,7 +318,10 @@ def upload_file():
     if 'user' not in session:
         return redirect(url_for('login'))
 
+
+
     if request.method == 'POST':
+        print("POST request received")
         store_name = request.form.get('store')
         csv_file = request.files.get('csvFile')
 
