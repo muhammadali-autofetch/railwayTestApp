@@ -15,6 +15,8 @@ app.secret_key = 'ali'
 STORE_CONFIG_PATH = './JsonFiles/stores_config.json'
 ORDER_STATS_FILE = './JsonFiles/order_stats.json'
 
+
+
 # if it doesn't exist, create the jsonFiles directory
 if not os.path.exists('./JsonFiles'):
     os.makedirs('./JsonFiles')
@@ -420,6 +422,22 @@ def delete_store(store_name):
 def logout():
     session.pop('user', None)
     return redirect(url_for('login'))
+
+
+# see all JsonFiles/order_stats.json 
+@app.route('/api/order_stats')
+def api_order_stats():
+    with open(ORDER_STATS_FILE) as f:
+        order_stats = json.load(f)
+    return jsonify(order_stats)
+
+# see all stores in JsonFiles/store_config.json
+@app.route('/api/store_config')
+def api_store_config():
+    with open(STORE_CONFIG_PATH) as f:
+        store_config = json.load(f)
+    return jsonify(store_config)
+
 
 
 if __name__ == '__main__':
