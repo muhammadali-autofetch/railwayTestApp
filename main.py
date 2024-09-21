@@ -326,16 +326,19 @@ def upload_file():
         csv_file = request.files.get('csvFile')
 
         if not store_name or not csv_file:
+            print("Store name and CSV file are required!")
             flash("Store name and CSV file are required!", "error")
             return redirect(url_for('upload_file'))
 
         store_config = STORE_CONFIG.get(store_name)
         if not store_config:
+            print(f"Store '{store_name}' not found!")
             flash("Invalid store name!", "error")
             return redirect(url_for('upload_file'))
 
         api_key = store_config.get('api_key')
         if not api_key:
+            print(f"API key for store '{store_name}' not found!")
             flash(f"API key for store '{store_name}' not found!", "error")
             return redirect(url_for('upload_file'))
 
@@ -355,6 +358,7 @@ def upload_file():
             flash(f"Started processing orders for store '{store_name}'", "success")
             return redirect(url_for('order_management'))
         else:
+            print("No product variant mappings found.")
             flash("No product variant mappings found.", "error")
 
     return render_template('UploadFile.html')
