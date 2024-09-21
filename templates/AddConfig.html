@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopify Store Configuration</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .container h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: dodgerblue;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .existed-store button {
+            width: 100%;
+            padding: 10px;
+            background-color: green;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .success {
+            color: green;
+            text-align: center;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+        }
+
+        .existed-store {
+            margin-top: 20px;
+        }
+
+        #storeList {
+            display: none;
+            margin-top: 15px;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #storeList ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #storeList ul li {
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Add Shopify Store</h1>
+    <form id="storeForm">
+        <div class="form-group">
+            <label for="storeName">Store Name:</label>
+            <input type="text" id="storeName" required>
+        </div>
+        <div class="form-group">
+            <label for="apiKey">API Key:</label>
+            <input type="text" id="apiKey" required>
+        </div>
+        <div class="form-group">
+            <label for="password">API Password:</label>
+            <input type="password" id="password" required>
+        </div>
+        <div class="form-group">
+            <label for="storeurl">Store Url:</label>
+            <input type="text" id="storeurl" placeholder="storename.myshopify.com" required>
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Save Store</button>
+        </div>
+
+        <div id="message" class="success"></div>
+    </form>
+
+    <div class="existed-store">
+        <button onclick="fetchExistingStores()">Existed Stores</button>
+    </div>
+
+    <div id="storeList">
+        <ul id="storeListContainer"></ul>
+    </div>
+
+</div>
+
+<script>
+    function fetchExistingStores() {
+        $.get('/existing-stores', function (data) {
+            const storeListContainer = $('#storeListContainer');
+            storeListContainer.empty(); // Clear previous store list
+
+            if (data.store_names.length > 0) {
+                // Redirect to /create if stores exist
+                window.location.href = "/create";
+            } else {
+                // Show 'No Store Existed' message
+                storeListContainer.append('<li style="color: red; font-size: 20px; text-align: center">No Store Existed</li>');
+                $('#storeList').show(); // Show the store list
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // Form submission logic
+        $('#storeForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const storeName = $('#storeName').val();
+            const apiKey = $('#apiKey').val();
+            const password = $('#password').val();
+            const storeUrl = $('#storeurl').val();
+
+
+            if (!storeUrl.startsWith(storeName + '.myshopify.com')) {
+                $('#message').text('Store URL must be Correct!').css('color', 'red');
+                return;
+            }
+
+
+            // Check if all fields are filled
+            if (!storeName || !apiKey || !password || !storeUrl) {
+                $('#message').text('All fields are required!').css('color', 'red');
+                return;
+            }
+
+            const storeData = {
+                store_name: storeName,
+                api_key: apiKey,
+                password: password,
+                store_url: storeUrl
+            };
+
+            // Send the data to the server to save the store
+            fetch('/save_store', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(storeData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        $('#message').text(data.message).css('color', 'green');
+                        setTimeout(() => {
+                            window.location.href = "/create";
+                        }, 1000); // Adjust delay as needed
+                    } else {
+                        $('#message').text('Error saving store').css('color', 'red');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    $('#message').text('Error saving store').css('color', 'red');
+                });
+        });
+    });
+</script>
+
+</body>
+</html>
