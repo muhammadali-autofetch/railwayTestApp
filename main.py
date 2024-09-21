@@ -15,6 +15,7 @@ app.secret_key = 'ali'
 STORE_CONFIG_PATH = './JsonFiles/stores_config.json'
 ORDER_STATS_FILE = './JsonFiles/order_stats.json'
 
+print("Running the Flask app...")
 
 
 # if it doesn't exist, create the jsonFiles directory
@@ -424,7 +425,7 @@ def logout():
     return redirect(url_for('login'))
 
 
-# see all JsonFiles/order_stats.json 
+# see all JsonFiles/order_stats.json
 @app.route('/api/order_stats')
 def api_order_stats():
     with open(ORDER_STATS_FILE) as f:
