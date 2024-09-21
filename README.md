@@ -1,23 +1,8 @@
----
-title: Flask
-description: A popular minimal server framework for Python
-tags:
-  - python
-  - flask
----
+# flask
+A minimal Flask web application.
 
-# Python Flask Example
+![static-site](static/images/static-site.png)
 
-This is a [Flask](https://flask.palletsprojects.com/en/1.1.x/) app that serves a simple JSON response.
+For a step-by-step guide to deploying on [Railway](https://railway.app/?referralCode=alphasec), see [this](https://alphasec.io/how-to-deploy-a-python-flask-app-on-railway/) post, or click the button below.
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/zUcpux)
-
-## ✨ Features
-
-- Python
-- Flask
-
-## 💁‍♀️ How to use
-
-- Install Python requirements `pip install -r requirements.txt`
-- Start the server for development `python3 main.py`
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/igzwwg?referralCode=alphasec)
